@@ -28,15 +28,29 @@ func Build(ctx context.Context) error {
 	defer client.Close()
 
 	LANGTRACE_API_KEY := client.SetSecret("LANGTRACE_API_KEY", os.Getenv("LANGTRACE_API_KEY"))
+	OPENAI_API_KEY := client.SetSecret("OPENAI_API_KEY", os.Getenv("OPENAI_API_KEY"))
 
 	python := client.Container().From("python:3.12.2-bookworm").
 		WithSecretVariable("LANGTRACE_API_KEY", LANGTRACE_API_KEY).
+		WithSecretVariable("OPENAI_API_KEY", OPENAI_API_KEY).
 		WithDirectory("python", client.Host().Directory("python")).
+		WithDirectory("doccing", client.Host().Directory("doccing")).
 		WithExec([]string{"python", "--version"}).
 		WithExec([]string{"pip", "install", "crewai"}).
 		WithExec([]string{"pip", "install", "langtrace-python-sdk"})
 
-	output, err := python.WithExec([]string{"python", "python/run-agents.py"}).Stdout(ctx)
+	output, err := python.
+		WithWorkdir("doccing").
+		WithExec([]string{"crewai", "install"}).
+		Stdout(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Println("'crewai install' output:", output)
+
+	output, err = python.
+		WithExec([]string{"python", "python/run-agents.py"}).
+		Stdout(ctx)
 	if err != nil {
 		return err
 	}

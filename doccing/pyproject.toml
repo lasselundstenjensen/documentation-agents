@@ -1,0 +1,20 @@
+[project]
+name = "doccing"
+version = "0.1.0"
+description = "doccing using crewAI"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.10,<=3.13"
+dependencies = [
+    "crewai[tools]>=0.80.0,<1.0.0"
+]
+
+[project.scripts]
+doccing = "doccing.main:run"
+run_crew = "doccing.main:run"
+train = "doccing.main:train"
+replay = "doccing.main:replay"
+test = "doccing.main:test"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
