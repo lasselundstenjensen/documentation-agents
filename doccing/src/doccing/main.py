@@ -4,6 +4,8 @@ import warnings
 
 from doccing.crew import Doccing
 
+# Must precede any llm module imports
+
 from langtrace_python_sdk import langtrace
 
 import os
