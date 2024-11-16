@@ -4,6 +4,12 @@ import warnings
 
 from doccing.crew import Doccing
 
+from langtrace_python_sdk import langtrace
+
+import os
+
+langtrace.init(api_key = os.getenv('LANGTRACE_API_KEY'))
+
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 # This main file is intended to be a way for you to run your

@@ -49,6 +49,15 @@ func Build(ctx context.Context) error {
 	fmt.Println("'crewai install' output:", output)
 
 	output, err = python.
+		WithWorkdir("doccing").
+		WithExec([]string{"crewai", "run"}).
+		Stdout(ctx)
+	if err != nil {
+		return err
+	}
+	fmt.Println("'crewai run' output:", output)
+
+	output, err = python.
 		WithExec([]string{"python", "python/run-agents.py"}).
 		Stdout(ctx)
 	if err != nil {
@@ -56,12 +65,13 @@ func Build(ctx context.Context) error {
 	}
 	fmt.Println("Python script output:", output)
 
-	// _, err = python.
-	// 	Directory("output").
-	// 	Export(ctx, "output")
-	// if err != nil {
-	// 	return err
-	// }
+	_, err = python.
+		WithWorkdir("doccing").
+		Directory("output").
+		Export(ctx, "output/report.md")
+	if err != nil {
+		return err
+	}
 
 	return nil
 }
